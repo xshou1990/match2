@@ -4,16 +4,13 @@ Implementation of Match2: Hybrid Self-Organizing Map and Neural Network Strategi
 Author: Xiao Shou, some codes inspired and adapted from Florent Forest 's DESOM model
 
 """
-# Utilities
+
 import csv
-#import argparse
 from time import time
-# Tensorflow/Keras
 import tensorflow as tf
 from keras.models import Model
 from keras.layers import Input, Dense
 from SOM import SOMLayer
-#from metrics import quantization_error,topographic_error
 import numpy as np
 from sklearn.metrics import roc_auc_score
 
@@ -261,9 +258,6 @@ class MATCHSOM:
         if not self.pretrained:
             print('Classifier was not pre-trained!')
 
-        #save_interval = X_train.shape[0] // batch_size * save_epochs # save every save_epochs epochs
-        #print('Save interval:', save_interval)
-
         
         # Logging file
         logfile = open(save_dir + '/matchsom_log.csv', 'w')
@@ -331,39 +325,22 @@ class MATCHSOM:
                 # Train on batch
                 loss = self.model.train_on_batch(x=X_batch, y=[y_batch, w_batch])
 
-
                 if ite % eval_interval == 0:
-                    #y_pred, _ = self.model.predict(X_train)
-                    #y_pred_val, _ = self.model.predict(X_val)   
 
-                    #try:       
-                    #    auc, auc_val = roc_auc_score( y_train , np.squeeze(y_pred,axis=1)), roc_auc_score( y_val , np.squeeze(y_pred_val,axis=1)) 
-
-                    #except:
-                    #    print( "Problem in Calculating auc")    
                     # Initialize log dictionary
                     logdict = dict(iter=ite, T=T)
 
-                    # Evaluate losses and metrics
-                    #print('iteration {} - T={}'.format(ite, T))
+
                     logdict['L'] = loss[0]
                     logdict['Lc'] = loss[1]
                     logdict['Lsom'] = loss[2]
-                    #logdict['latent_quantization_err'] = quantization_error(d)
-                    #logdict['latent_topographic_err'] = topographic_error(d, self.map_size)
-                    #logdict['auc'] = auc
-                    #print('[Train] - Lc={:f}, Lsom={:f}, total loss={:f}, auc = {:f}'.format(logdict['Lc'], logdict['Lsom'], logdict['L'], logdict['auc']) )
+
 
                     if X_val is not None:
                         val_loss = self.model.test_on_batch(X_val_batch, [y_val_batch, w_val_batch])
                         logdict['L_val'] = val_loss[0]
                         logdict['Lc_val'] = val_loss[1]
                         logdict['Lsom_val'] = val_loss[2]
-                     #   logdict['latent_quantization_err_val'] = quantization_error(d_val)
-                      #  logdict['latent_topographic_err_val'] = topographic_error(d_val, self.map_size)
-                       # logdict['auc_val'] = auc_val
-                       # print('[Val] - Lc={:f}, Lsom={:f}, total loss={:f}, auc ={:f}'.format(logdict['Lc_val'], logdict['Lsom_val'], logdict['L_val'],logdict['auc_val']))
-
 
                         bce_val_hist.append(val_loss[1])
                         som_val_hist.append(val_loss[2])
