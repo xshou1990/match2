@@ -200,7 +200,7 @@ class MATCHSOM:
                  optimizer='adam',
                  epochs=1000,
                  batch_size=64,
-                 save_dir='../../results/tmp'):
+                 save_dir='save_dir'):
         """
         Pre-train the binary classifier using only binary cross entropy loss
         Saves weights in h5 format.
@@ -235,8 +235,7 @@ class MATCHSOM:
             batch_size=256,
             Tmax=10,
             Tmin=0.1,
-            decay='exponential',
-           save_dir='results/tmp'):
+            decay='exponential'):
         """
         Training procedure
         # Arguments
@@ -259,14 +258,14 @@ class MATCHSOM:
             print('Classifier was not pre-trained!')
 
         
-        # Logging file
-        logfile = open(save_dir + '/matchsom_log.csv', 'w')
-        fieldnames = ['iter', 'T', 'L', 'Lc', 'Lsom']
-        if X_val is not None:
-            fieldnames += ['L_val', 'Lc_val', 'Lsom_val']
+# #         # Logging file
+#         logfile = open(save_dir + '/matchsom_log.csv', 'w')
+#         fieldnames = ['iter', 'T', 'L', 'Lc', 'Lsom']
+#         if X_val is not None:
+#             fieldnames += ['L_val', 'Lc_val', 'Lsom_val']
 
-        logwriter = csv.DictWriter(logfile, fieldnames)
-        logwriter.writeheader()
+#        logwriter = csv.DictWriter(logfile, fieldnames)
+#         logwriter.writeheader()
         
         
         # Set and compute some initial values
@@ -351,4 +350,4 @@ class MATCHSOM:
                             if bce_val_hist[-2] - bce_val_hist[-1] < 1e-3 and  som_val_hist[-2] - som_val_hist[-1] < 1e-3:
                                 break
 
-                    logwriter.writerow(logdict)
+#                     logwriter.writerow(logdict)
